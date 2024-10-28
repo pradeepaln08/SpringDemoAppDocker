@@ -1,0 +1,30 @@
+name: Build Docker Image
+on: 
+  #push:
+  watch:
+    branches:
+      - main
+jobs:
+    build:
+      name: push docker image to docker hub1
+      runs-on: linuxrun01
+
+      steps:
+        - uses: actions/checkout@v2
+        - name: login to docker hub
+          id: docker-hub
+          env:
+            username: ${{secrets.DOCKERHUB_USERNAME}}
+            password: ${{secrets.DOCKERHUB_PASSWORD}}            
+          run:
+            docker login -u $username -p $password
+            ##docker login -u pradeepln08 -p Treasure#09
+        - name: build the docker image
+          id: build-docker-image
+          run: |
+            ls -la 
+            docker build . -f Dockerfile -t pradeepln08/springdemoapp:latest
+        - name: push the docker image
+          id: push-docker-image
+          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/springdemoapp:latest
+
